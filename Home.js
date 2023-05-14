@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { AccessTokenRequest, ResponseType, useAuthRequest } from "expo-auth-session";
+import { AccessTokenRequest, ResponseType, useAuthRequest, revokeAsync } from "expo-auth-session";
 import * as SecureStore from "expo-secure-store";
 import { Buffer } from 'buffer';
 
@@ -89,10 +89,22 @@ const Home = ({navigation}) => {
     console.log("Token Expire Time:", tokenExpireTime);
   }
 
+  const logout = async () => {
+    const accessTok = await SecureStore.getItemAsync("access_token");
+    const discovery = {
+      revocationEndpoint: "https://accounts.spotify.com/api/token",
+    };
+    await revokeAsync({
+      token: accessTok,
+    }, discovery);
+    clearData();
+    navigation.navigate("Login");
+  }
+
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={() => clearData()}>
+      <TouchableOpacity style={styles.button} onPress={() => logout()}>
         <Text>Logout</Text>
       </TouchableOpacity>
       <TouchableOpacity style={{width: 200, backgroundColor: "red", height: 100}} onPress={() => checkDetails()}>

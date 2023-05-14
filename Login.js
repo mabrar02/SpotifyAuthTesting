@@ -19,7 +19,9 @@ const Login = ({ navigation }) => {
     ],
     usePKCE: false,
     redirectUri: "exp://192.168.2.21:19000",
-    prompt: "login",
+    extraParams: {
+      show_dialog: "true",
+    },
   };
 
   const discovery = {
